@@ -1,15 +1,17 @@
+import app.models
+
 from fastapi import FastAPI
+from app.db.database import create_tables
 
 app = FastAPI(
     title="Smart Grid Energy Monitoring System",
-    description="Real-time Smart Grid Monitoring Backend",
     version="1.0.0"
 )
 
+create_tables()
 
 @app.get("/")
 def root():
     return {
-        "status": "running",
-        "message": "Welcome to Smart Grid Energy Monitoring System"
+        "message": "Smart Grid Energy Monitoring System API is running."
     }
