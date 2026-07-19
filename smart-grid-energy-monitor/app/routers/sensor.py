@@ -5,6 +5,7 @@ from app.db.database import SessionLocal
 from app.schemas import SensorCreate
 from app.crud import create_sensor, get_sensors
 
+
 router = APIRouter(prefix="/sensors", tags=["Sensors"])
 
 def get_db():
