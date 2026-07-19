@@ -2,6 +2,7 @@ import app.models
 
 from fastapi import FastAPI
 from app.db.database import create_tables
+from app.routers.sensor import router as sensor_router
 
 app = FastAPI(
     title="Smart Grid Energy Monitoring System",
@@ -9,6 +10,8 @@ app = FastAPI(
 )
 
 create_tables()
+
+app.include_router(sensor_router)
 
 @app.get("/")
 def root():
