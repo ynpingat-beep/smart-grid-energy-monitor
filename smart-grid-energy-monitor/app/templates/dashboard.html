@@ -1,94 +1,115 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Grid Dashboard</title>
 
-<title>Smart Grid Dashboard</title>
-
-<link rel="stylesheet" href="/static/style.css">
-
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
 
-<div class="header">
+    <div class="header">
+        ⚡ Smart Grid Energy Monitoring System
+    </div>
 
-⚡ Smart Grid Energy Monitoring System
+    <div class="container">
 
-</div>
+        <!-- Dashboard Cards -->
+        <div class="cards">
 
-<div class="container">
+            <div class="card blue">
+                <h2>Total Sensors</h2>
+                <p id="sensors">0</p>
+            </div>
 
-<div class="cards">
+            <div class="card green">
+                <h2>Active Sensors</h2>
+                <p id="active">0</p>
+            </div>
 
-<div class="card blue">
-<h2>Total Sensors</h2>
-<p id="sensors">0</p>
-</div>
+            <div class="card orange">
+                <h2>Total Readings</h2>
+                <p id="readings">0</p>
+            </div>
 
-<div class="card green">
-<h2>Active Sensors</h2>
-<p id="active">0</p>
-</div>
+            <div class="card purple">
+                <h2>Average Voltage</h2>
+                <p id="voltage">0</p>
+            </div>
 
-<div class="card orange">
-<h2>Total Readings</h2>
-<p id="readings">0</p>
-</div>
+            <div class="card red">
+                <h2>Total Energy</h2>
+                <p id="energy">0</p>
+            </div>
 
-<div class="card purple">
-<h2>Average Voltage</h2>
-<p id="voltage">0</p>
-</div>
+        </div>
 
-<div class="card red">
-<h2>Total Energy</h2>
-<p id="energy">0</p>
-</div>
+        <!-- Recent Sensors -->
+        <div class="section">
 
-</div>
+            <h2>Recent Sensors</h2>
 
-<div class="section">
+            <table>
 
-<h2>Recent Sensors</h2>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Sensor Name</th>
+                        <th>Status</th>
+                        <th>Location</th>
+                    </tr>
+                </thead>
 
-<table>
+                <tbody id="sensorTable">
 
-<tr>
+                </tbody>
 
-<th>ID</th>
-<th>Sensor</th>
-<th>Status</th>
-<th>Location</th>
+            </table>
 
-</tr>
+        </div>
 
-<tr>
+        <!-- Voltage Chart -->
+        <div class="section">
 
-<td>1</td>
-<td>Main Meter</td>
-<td>🟢 Active</td>
-<td>Mumbai</td>
+            <h2>Voltage Trend</h2>
 
-</tr>
+            <canvas id="voltageChart"></canvas>
 
-</table>
+        </div>
 
-</div>
+        <!-- Power Chart -->
+        <div class="section">
 
-<div class="section">
+            <h2>Power Consumption</h2>
 
-<h2>Voltage Trend</h2>
+            <canvas id="powerChart"></canvas>
 
-<p style="text-align:center;padding:40px;">
-📈 Chart will be added in Week 2
-</p>
+        </div>
 
-</div>
+        <!-- System Status -->
+        <div class="section">
 
-</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
 
-<script src="/static/script.js"></script>
+                <h2>System Status</h2>
+
+                <h3 id="time"></h3>
+
+            </div>
+
+            <p style="margin-top:20px;font-size:18px;">
+                🟢 Smart Grid Monitoring Service Running
+            </p>
+
+        </div>
+
+    </div>
+
+    <script src="/static/script.js"></script>
 
 </body>
 

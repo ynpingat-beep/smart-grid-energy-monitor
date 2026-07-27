@@ -74,3 +74,7 @@ def get_dashboard_summary(db: Session):
         "average_power": round(average_power, 2),
         "total_energy": round(total_energy, 2)
     }
+
+
+def get_recent_sensors(db: Session):
+    return db.query(Sensor).order_by(Sensor.id.desc()).limit(5).all()
