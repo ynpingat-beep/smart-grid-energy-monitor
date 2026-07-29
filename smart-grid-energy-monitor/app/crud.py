@@ -78,3 +78,23 @@ def get_dashboard_summary(db: Session):
 
 def get_recent_sensors(db: Session):
     return db.query(Sensor).order_by(Sensor.id.desc()).limit(5).all()
+
+
+def get_chart_data(db: Session):
+    readings = (
+        db.query(EnergyReading)
+        .order_by(EnergyReading.id.desc())
+        .limit(10)
+        .all()
+    )
+
+    readings.reverse()
+
+    return [
+        {
+            "id": reading.id,
+            "voltage": reading.voltage,
+            "power": reading.power
+        }
+        for reading in readings
+    ]
