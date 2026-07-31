@@ -1,3 +1,6 @@
+import json
+from app.core.redis import redis_client
+
 from sqlalchemy.orm import Session
 from app.models import Sensor
 from app.schemas import SensorCreate
@@ -38,9 +41,17 @@ def get_readings(db: Session):
 
 def get_dashboard_summary(db: Session):
 
+    cached = redis_client.get("dashboard_summary")
+
+    if cached:
+        print("Serving data from Redis Cache")
+        return json.loads(cached)
+
     total_sensors = db.query(Sensor).count()
 
-    active_sensors = db.query(Sensor).filter(
+    active_sensors = db.query(
+        Sensor
+    ).filter(
         Sensor.status == "Active"
     ).count()
 
@@ -64,16 +75,28 @@ def get_dashboard_summary(db: Session):
         func.sum(EnergyReading.energy)
     ).scalar() or 0
 
-    return {
+    summary = {
+
         "total_sensors": total_sensors,
         "active_sensors": active_sensors,
         "inactive_sensors": inactive_sensors,
         "total_readings": total_readings,
-        "average_voltage": round(average_voltage, 2),
-        "average_current": round(average_current, 2),
-        "average_power": round(average_power, 2),
-        "total_energy": round(total_energy, 2)
+        "average_voltage": round(average_voltage,2),
+        "average_current": round(average_current,2),
+        "average_power": round(average_power,2),
+        "total_energy": round(total_energy,2)
+
     }
+
+    redis_client.setex(
+        "dashboard_summary",
+        60,
+        json.dumps(summary)
+    )
+
+    print("Serving data from PostgreSQL")
+
+    return summary
 
 
 def get_recent_sensors(db: Session):
