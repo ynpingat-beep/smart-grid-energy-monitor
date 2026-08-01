@@ -1,7 +1,18 @@
-from app.celery_app import celery
-from datetime import datetime
+from app.celery_worker import celery
+
+from app.db.database import SessionLocal
+
+from app.crud import aggregate_load_by_zone
+
 
 @celery.task
-def dashboard_background_task():
-    print("Background task executed at:", datetime.now())
-    return "Task Completed Successfully"
+def aggregate_load_task():
+
+    db = SessionLocal()
+
+    try:
+        result = aggregate_load_by_zone(db)
+        print(result)
+
+    finally:
+        db.close()

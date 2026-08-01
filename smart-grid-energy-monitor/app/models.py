@@ -39,3 +39,22 @@ class EnergyReading(Base):
     timestamp = Column(DateTime, default=datetime.utcnow)
     
     sensor = relationship("Sensor", back_populates="readings")
+
+
+
+class AggregatedLoad(Base):
+    __tablename__ = "aggregated_loads"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    zone = Column(String, nullable=False)
+
+    average_voltage = Column(Float, nullable=False)
+
+    average_current = Column(Float, nullable=False)
+
+    total_power = Column(Float, nullable=False)
+
+    total_energy = Column(Float, nullable=False)
+
+    created_at = Column(DateTime, default=datetime.utcnow)

@@ -10,6 +10,8 @@ from app.routers.sensor import router as sensor_router
 from app.routers.reading import router as reading_router
 from app.routers.dashboard import router as dashboard_router
 
+from app.routers.analytics import router as analytics_router
+
 app = FastAPI(
     title="Smart Grid Energy Monitoring System",
     version="1.0.0"
@@ -41,6 +43,7 @@ templates = Jinja2Templates(
 app.include_router(sensor_router)
 app.include_router(reading_router)
 app.include_router(dashboard_router)
+app.include_router(analytics_router)
 
 # Home Route
 @app.get("/")

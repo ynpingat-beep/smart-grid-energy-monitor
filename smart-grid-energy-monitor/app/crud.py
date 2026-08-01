@@ -2,10 +2,9 @@ import json
 from app.core.redis import redis_client
 
 from sqlalchemy.orm import Session
-from app.models import Sensor
+from app.models import Sensor, EnergyReading, AggregatedLoad
 from app.schemas import SensorCreate
 
-from app.models import EnergyReading
 from app.schemas import EnergyReadingCreate
 
 from sqlalchemy import func
@@ -129,3 +128,44 @@ def get_chart_data(db: Session):
         }
         for reading in readings
     ]
+
+
+def aggregate_load_by_zone(db: Session):
+
+    # Remove old aggregated data
+    db.query(AggregatedLoad).delete()
+
+    # Get all sensors
+    sensors = db.query(Sensor).all()
+
+    for sensor in sensors:
+
+        readings = (
+            db.query(EnergyReading)
+            .filter(EnergyReading.sensor_id == sensor.id)
+            .all()
+        )
+
+        if not readings:
+            continue
+
+        avg_voltage = sum(r.voltage for r in readings) / len(readings)
+        avg_current = sum(r.current for r in readings) / len(readings)
+        total_power = sum(r.power for r in readings)
+        total_energy = sum(r.energy for r in readings)
+
+        aggregated = AggregatedLoad(
+            zone=sensor.location,
+            average_voltage=round(avg_voltage, 2),
+            average_current=round(avg_current, 2),
+            total_power=round(total_power, 2),
+            total_energy=round(total_energy, 2)
+        )
+
+        db.add(aggregated)
+
+    db.commit()
+
+    return {
+        "message": "Aggregation completed successfully."
+    }
