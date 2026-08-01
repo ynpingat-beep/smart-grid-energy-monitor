@@ -258,3 +258,33 @@ setInterval(() => {
     loadCharts();
 
 }, 10000);
+
+// ================= WebSocket Connection =================
+
+const socket = new WebSocket("ws://127.0.0.1:8000/ws");
+
+socket.onopen = function () {
+
+    console.log("🟢 WebSocket Connected");
+
+    socket.send("Dashboard Connected");
+
+};
+
+socket.onmessage = function (event) {
+
+    console.log("Live Message:", event.data);
+
+};
+
+socket.onclose = function () {
+
+    console.log("🔴 WebSocket Disconnected");
+
+};
+
+socket.onerror = function (error) {
+
+    console.log("WebSocket Error:", error);
+
+};

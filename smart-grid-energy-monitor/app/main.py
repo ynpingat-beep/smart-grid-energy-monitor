@@ -12,6 +12,9 @@ from app.routers.dashboard import router as dashboard_router
 
 from app.routers.analytics import router as analytics_router
 
+from app.routers.websocket import router as websocket_router
+
+
 app = FastAPI(
     title="Smart Grid Energy Monitoring System",
     version="1.0.0"
@@ -44,6 +47,7 @@ app.include_router(sensor_router)
 app.include_router(reading_router)
 app.include_router(dashboard_router)
 app.include_router(analytics_router)
+app.include_router(websocket_router)
 
 # Home Route
 @app.get("/")
