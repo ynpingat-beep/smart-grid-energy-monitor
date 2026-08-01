@@ -41,58 +41,66 @@ def get_readings(db: Session):
 
 def get_dashboard_summary(db: Session):
 
-    cached = redis_client.get("dashboard_summary")
+    # Try Redis Cache first
+    try:
+        cached = redis_client.get("dashboard_summary")
 
-    if cached:
-        print("Serving data from Redis Cache")
-        return json.loads(cached)
+        if cached:
+            print("Serving data from Redis Cache")
+            return json.loads(cached)
 
+    except Exception as e:
+        print("Redis unavailable. Using PostgreSQL.", e)
+
+    # PostgreSQL Queries
     total_sensors = db.query(Sensor).count()
 
-    active_sensors = db.query(
-        Sensor
-    ).filter(
-        Sensor.status == "Active"
-    ).count()
+    active_sensors = (
+        db.query(Sensor)
+        .filter(Sensor.status == "Active")
+        .count()
+    )
 
     inactive_sensors = total_sensors - active_sensors
 
     total_readings = db.query(EnergyReading).count()
 
-    average_voltage = db.query(
-        func.avg(EnergyReading.voltage)
-    ).scalar() or 0
+    average_voltage = (
+        db.query(func.avg(EnergyReading.voltage)).scalar() or 0
+    )
 
-    average_current = db.query(
-        func.avg(EnergyReading.current)
-    ).scalar() or 0
+    average_current = (
+        db.query(func.avg(EnergyReading.current)).scalar() or 0
+    )
 
-    average_power = db.query(
-        func.avg(EnergyReading.power)
-    ).scalar() or 0
+    average_power = (
+        db.query(func.avg(EnergyReading.power)).scalar() or 0
+    )
 
-    total_energy = db.query(
-        func.sum(EnergyReading.energy)
-    ).scalar() or 0
+    total_energy = (
+        db.query(func.sum(EnergyReading.energy)).scalar() or 0
+    )
 
     summary = {
-
         "total_sensors": total_sensors,
         "active_sensors": active_sensors,
         "inactive_sensors": inactive_sensors,
         "total_readings": total_readings,
-        "average_voltage": round(average_voltage,2),
-        "average_current": round(average_current,2),
-        "average_power": round(average_power,2),
-        "total_energy": round(total_energy,2)
-
+        "average_voltage": round(average_voltage, 2),
+        "average_current": round(average_current, 2),
+        "average_power": round(average_power, 2),
+        "total_energy": round(total_energy, 2),
     }
 
-    redis_client.setex(
-        "dashboard_summary",
-        60,
-        json.dumps(summary)
-    )
+    # Save to Redis (if available)
+    try:
+        redis_client.setex(
+            "dashboard_summary",
+            60,
+            json.dumps(summary)
+        )
+    except Exception:
+        print("Could not save to Redis cache.")
 
     print("Serving data from PostgreSQL")
 

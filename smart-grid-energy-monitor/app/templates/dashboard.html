@@ -2,115 +2,543 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Grid Dashboard</title>
+
+    <title>Smart Grid Energy Monitoring System</title>
 
     <link rel="stylesheet" href="/static/style.css">
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
 </head>
 
 <body>
 
-    <div class="header">
-        ⚡ Smart Grid Energy Monitoring System
-    </div>
+<div class="layout">
 
-    <div class="container">
+    <!-- ================= SIDEBAR ================= -->
 
-        <!-- Dashboard Cards -->
-        <div class="cards">
+    <aside class="sidebar">
 
-            <div class="card blue">
-                <h2>Total Sensors</h2>
-                <p id="sensors">0</p>
-            </div>
+        <div class="logo">
 
-            <div class="card green">
-                <h2>Active Sensors</h2>
-                <p id="active">0</p>
-            </div>
+            <i class="fas fa-bolt"></i>
 
-            <div class="card orange">
-                <h2>Total Readings</h2>
-                <p id="readings">0</p>
-            </div>
+            <div>
 
-            <div class="card purple">
-                <h2>Average Voltage</h2>
-                <p id="voltage">0</p>
-            </div>
+                <h2>Smart Grid</h2>
 
-            <div class="card red">
-                <h2>Total Energy</h2>
-                <p id="energy">0</p>
+                <small>Energy Monitoring</small>
+
             </div>
 
         </div>
 
-        <!-- Recent Sensors -->
-        <div class="section">
+        <ul>
 
-            <h2>Recent Sensors</h2>
+            <li class="active">
 
-            <table>
+                <i class="fas fa-chart-line"></i>
 
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Sensor Name</th>
-                        <th>Status</th>
-                        <th>Location</th>
-                    </tr>
-                </thead>
+                <span>Dashboard</span>
 
-                <tbody id="sensorTable">
+            </li>
 
-                </tbody>
+            <li>
 
-            </table>
+                <i class="fas fa-microchip"></i>
 
-        </div>
+                <span>Sensors</span>
 
-        <!-- Voltage Chart -->
-        <div class="section">
+            </li>
 
-            <h2>Voltage Trend</h2>
+            <li>
 
-            <canvas id="voltageChart"></canvas>
+                <i class="fas fa-database"></i>
 
-        </div>
+                <span>Readings</span>
 
-        <!-- Power Chart -->
-        <div class="section">
+            </li>
 
-            <h2>Power Consumption</h2>
+            <li>
 
-            <canvas id="powerChart"></canvas>
+                <i class="fas fa-chart-bar"></i>
 
-        </div>
+                <span>Analytics</span>
 
-        <!-- System Status -->
-        <div class="section">
+            </li>
 
-            <div style="display:flex;justify-content:space-between;align-items:center;">
+            <li>
 
-                <h2>System Status</h2>
+                <i class="fas fa-file-alt"></i>
 
-                <h3 id="time"></h3>
+                <span>Reports</span>
+
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="main-content">
+
+        <!-- ================= TOP BAR ================= -->
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>⚡ Smart Grid Energy Monitoring System</h1>
+
+                <p>
+                    Real-Time Power Distribution Dashboard
+                </p>
 
             </div>
 
-            <p style="margin-top:20px;font-size:18px;">
-                🟢 Smart Grid Monitoring Service Running
-            </p>
+            <div class="top-right">
 
-        </div>
+                <div class="status">
 
-    </div>
+                    <span class="green-dot"></span>
 
-    <script src="/static/script.js"></script>
+                    System Healthy
+
+                </div>
+
+                <div class="clock">
+
+                    <i class="fas fa-clock"></i>
+
+                    <span id="time">Loading...</span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- ================= KPI CARDS ================= -->
+
+        <section class="cards">
+
+            <div class="card">
+
+                <div>
+
+                    <h4>Total Sensors</h4>
+
+                    <h2 id="sensors">0</h2>
+
+                </div>
+
+                <i class="fas fa-microchip card-icon blue"></i>
+
+            </div>
+
+            <div class="card">
+
+                <div>
+
+                    <h4>Active Sensors</h4>
+
+                    <h2 id="active">0</h2>
+
+                </div>
+
+                <i class="fas fa-signal card-icon green"></i>
+
+            </div>
+
+            <div class="card">
+
+                <div>
+
+                    <h4>Total Readings</h4>
+
+                    <h2 id="readings">0</h2>
+
+                </div>
+
+                <i class="fas fa-database card-icon orange"></i>
+
+            </div>
+
+            <div class="card">
+
+                <div>
+
+                    <h4>Average Voltage</h4>
+
+                    <h2 id="voltage">0 V</h2>
+
+                </div>
+
+                <i class="fas fa-bolt card-icon yellow"></i>
+
+            </div>
+
+            <div class="card">
+
+                <div>
+
+                    <h4>Total Energy</h4>
+
+                    <h2 id="energy">0 kWh</h2>
+
+                </div>
+
+                <i class="fas fa-plug card-icon purple"></i>
+
+            </div>
+
+        </section>
+        <!-- ================= MAIN DASHBOARD ================= -->
+
+        <section class="dashboard-grid">
+
+            <!-- Voltage Chart -->
+
+            <div class="chart-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>Voltage Trend</h2>
+
+                        <p>Live Voltage Monitoring</p>
+
+                    </div>
+
+                    <i class="fas fa-chart-line"></i>
+
+                </div>
+
+                <canvas id="voltageChart"></canvas>
+
+            </div>
+
+            <!-- Power Chart -->
+
+            <div class="chart-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>Power Consumption</h2>
+
+                        <p>Latest 10 Readings</p>
+
+                    </div>
+
+                    <i class="fas fa-bolt"></i>
+
+                </div>
+
+                <canvas id="powerChart"></canvas>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= QUICK STATS ================= -->
+
+        <section class="quick-stats">
+
+            <div class="mini-card">
+
+                <div class="mini-icon green-bg">
+
+                    <i class="fas fa-heartbeat"></i>
+
+                </div>
+
+                <div>
+
+                    <h4>Grid Health</h4>
+
+                    <h2>98.6%</h2>
+
+                </div>
+
+            </div>
+
+            <div class="mini-card">
+
+                <div class="mini-icon blue-bg">
+
+                    <i class="fas fa-city"></i>
+
+                </div>
+
+                <div>
+
+                    <h4>Coverage</h4>
+
+                    <h2>5 Zones</h2>
+
+                </div>
+
+            </div>
+
+            <div class="mini-card">
+
+                <div class="mini-icon orange-bg">
+
+                    <i class="fas fa-broadcast-tower"></i>
+
+                </div>
+
+                <div>
+
+                    <h4>Network</h4>
+
+                    <h2>Stable</h2>
+
+                </div>
+
+            </div>
+
+            <div class="mini-card">
+
+                <div class="mini-icon purple-bg">
+
+                    <i class="fas fa-sync-alt"></i>
+
+                </div>
+
+                <div>
+
+                    <h4>Refresh</h4>
+
+                    <h2>10 sec</h2>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= ALERTS & ACTIVITY ================= -->
+
+        <section class="bottom-grid">
+
+            <div class="alert-card">
+
+                <div class="card-header">
+
+                    <h2>
+
+                        <i class="fas fa-triangle-exclamation"></i>
+
+                        Live Alerts
+
+                    </h2>
+
+                </div>
+
+                <div class="alert success">
+
+                    <i class="fas fa-circle-check"></i>
+
+                    All Sensors Operational
+
+                </div>
+
+                <div class="alert warning">
+
+                    <i class="fas fa-bolt"></i>
+
+                    Voltage Stable Across Grid
+
+                </div>
+
+                <div class="alert info">
+
+                    <i class="fas fa-server"></i>
+
+                    Redis Cache Connected
+
+                </div>
+
+                <div class="alert success">
+
+                    <i class="fas fa-gear"></i>
+
+                    Celery Worker Running
+
+                </div>
+
+            </div>
+
+
+            <div class="activity-card">
+
+                <div class="card-header">
+
+                    <h2>
+
+                        <i class="fas fa-clock-rotate-left"></i>
+
+                        Recent Activity
+
+                    </h2>
+
+                </div>
+
+                <ul class="activity-list">
+
+                    <li>
+
+                        <span class="dot green"></span>
+
+                        Sensor data synchronized
+
+                    </li>
+
+                    <li>
+
+                        <span class="dot blue"></span>
+
+                        Dashboard refreshed
+
+                    </li>
+
+                    <li>
+
+                        <span class="dot orange"></span>
+
+                        PostgreSQL connected
+
+                    </li>
+
+                    <li>
+
+                        <span class="dot purple"></span>
+
+                        Background task completed
+
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </section>
+                <!-- ================= RECENT SENSORS ================= -->
+
+        <section class="table-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h2>
+
+                        <i class="fas fa-microchip"></i>
+
+                        Recent Sensors
+
+                    </h2>
+
+                    <p>Latest Registered Sensors</p>
+
+                </div>
+
+                <button class="view-btn">
+
+                    View All
+
+                </button>
+
+            </div>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>Sensor Name</th>
+
+                            <th>Location</th>
+
+                            <th>Status</th>
+
+                            <th>Last Update</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="sensorTable">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+        <!-- ================= FOOTER ================= -->
+
+        <footer class="footer">
+
+            <div class="footer-left">
+
+                <h3>
+
+                    ⚡ Smart Grid Energy Monitoring System
+
+                </h3>
+
+                <p>
+
+                    Real-Time Monitoring • FastAPI • PostgreSQL • Redis • Celery • Docker
+
+                </p>
+
+            </div>
+
+            <div class="footer-right">
+
+                <span>
+
+                    Version 2.0
+
+                </span>
+
+            </div>
+
+        </footer>
+
+    </main>
+
+</div>
+
+<script src="/static/script.js"></script>
 
 </body>
 
 </html>
+
+
+        
