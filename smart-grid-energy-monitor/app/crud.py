@@ -1,4 +1,8 @@
 import json
+import asyncio
+
+from app.routers.websocket import broadcast_alert
+
 from app.core.redis import redis_client
 
 from sqlalchemy.orm import Session
@@ -11,14 +15,15 @@ from sqlalchemy import func
 
 
 def create_sensor(db: Session, sensor: SensorCreate):
-    db_sensor = Sensor(
-        sensor_name=sensor.sensor_name,
-        location=sensor.location,
-        status=sensor.status
-    )
+
+    db_sensor = Sensor(**sensor.model_dump())
+
     db.add(db_sensor)
+
     db.commit()
+
     db.refresh(db_sensor)
+
     return db_sensor
 
 def get_sensors(db: Session):
@@ -26,17 +31,21 @@ def get_sensors(db: Session):
 
 
 
-def create_reading(db: Session, reading: EnergyReadingCreate):
-    db_reading = EnergyReading(**reading.model_dump())
-    db.add(db_reading)
-    db.commit()
-    db.refresh(db_reading)
-    return db_reading
-
-
 def get_readings(db: Session):
     return db.query(EnergyReading).all()
 
+
+def create_reading(db: Session, reading: EnergyReadingCreate):
+
+    db_reading = EnergyReading(**reading.model_dump())
+
+    db.add(db_reading)
+
+    db.commit()
+
+    db.refresh(db_reading)
+
+    return db_reading
 
 def get_dashboard_summary(db: Session):
 
