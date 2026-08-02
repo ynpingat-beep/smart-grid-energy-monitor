@@ -12,9 +12,20 @@ async def websocket_endpoint(websocket: WebSocket):
 
     connected_clients.append(websocket)
 
+    print("Client Connected")
+
     try:
         while True:
-            await websocket.receive_text()
+            message = await websocket.receive_text()
+            print("Received:", message)
 
+            for client in connected_clients:
+                try:
+                    await client.send_text("🟢 Dashboard updated successfully")
+                except Exception:
+                    # ignore send errors for individual clients
+                    pass
     except WebSocketDisconnect:
-        connected_clients.remove(websocket)
+        if websocket in connected_clients:
+            connected_clients.remove(websocket)
+        print("Client Disconnected")

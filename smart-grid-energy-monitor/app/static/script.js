@@ -271,9 +271,17 @@ socket.onopen = function () {
 
 };
 
-socket.onmessage = function (event) {
+socket.onmessage = function(event){
 
-    console.log("Live Message:", event.data);
+    console.log("Live Update:", event.data);
+
+    loadDashboard();
+
+    loadSensors();
+
+    loadCharts();
+
+    addNotification(event.data);
 
 };
 
@@ -288,3 +296,29 @@ socket.onerror = function (error) {
     console.log("WebSocket Error:", error);
 
 };
+
+function addNotification(message){
+
+    const box = document.getElementById("notifications");
+
+    const item = document.createElement("div");
+
+    item.className = "notification-item";
+
+    const now = new Date().toLocaleTimeString();
+
+    item.innerHTML = `
+        <strong>${message}</strong>
+        <br>
+        <small>${now}</small>
+    `;
+
+    box.prepend(item);
+
+    while(box.children.length > 5){
+
+        box.removeChild(box.lastChild);
+
+    }
+
+}
