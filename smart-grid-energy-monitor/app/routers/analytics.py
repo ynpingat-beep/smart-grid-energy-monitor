@@ -4,6 +4,8 @@ from sqlalchemy.orm import Session
 from app.db.database import SessionLocal
 from app.models import AggregatedLoad
 
+from app.routers.websocket import broadcast_alert
+
 router = APIRouter(
     prefix="/analytics",
     tags=["Analytics"]
