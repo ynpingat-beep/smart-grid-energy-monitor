@@ -47,6 +47,7 @@ def create_reading(db: Session, reading: EnergyReadingCreate):
 
     return db_reading
 
+
 def get_dashboard_summary(db: Session):
 
     # Try Redis Cache first
