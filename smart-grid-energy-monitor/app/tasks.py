@@ -1,4 +1,4 @@
-from app.celery_worker import celery
+from app.celery_app import celery
 
 from app.db.database import SessionLocal
 
