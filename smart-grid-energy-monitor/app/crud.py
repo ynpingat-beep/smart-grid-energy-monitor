@@ -13,6 +13,8 @@ from app.schemas import EnergyReadingCreate
 
 from sqlalchemy import func
 
+from app.logger import logger
+
 
 def create_sensor(db: Session, sensor: SensorCreate):
 
@@ -23,6 +25,8 @@ def create_sensor(db: Session, sensor: SensorCreate):
     db.commit()
 
     db.refresh(db_sensor)
+
+    logger.info(f"Sensor Created | ID={db_sensor.id} | Name={db_sensor.sensor_name}")
 
     return db_sensor
 
@@ -44,6 +48,8 @@ def create_reading(db: Session, reading: EnergyReadingCreate):
     db.commit()
 
     db.refresh(db_reading)
+
+    logger.info(f"Reading Added | Sensor={db_reading.sensor_id} | Voltage={db_reading.voltage} | Power={db_reading.power}")
 
     return db_reading
 
@@ -175,6 +181,8 @@ def aggregate_load_by_zone(db: Session):
         db.add(aggregated)
 
     db.commit()
+
+    logger.info("Analytics aggregation completed successfully")
 
     return {
         "message": "Aggregation completed successfully."
