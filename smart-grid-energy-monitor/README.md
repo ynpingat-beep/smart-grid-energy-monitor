@@ -1,98 +1,242 @@
-# Smart Grid Energy Monitoring System
+# ⚡ Smart Grid Energy Monitoring System
 
-## Overview
-
-The Smart Grid Energy Monitoring System is a real-time backend application designed to collect, process, and monitor energy consumption data from smart grid sensors.
-
-The system provides APIs for sensor registration, energy data ingestion, real-time monitoring, analytics, and alert generation.
+A backend-based Smart Grid Energy Monitoring System built using **FastAPI**, **PostgreSQL**, **Redis**, **Celery**, and **WebSockets**. The project enables real-time monitoring of smart energy sensors, dashboard analytics, caching, background task processing, and live updates.
 
 ---
 
-## Features
+## 🚀 Features
 
-- Sensor Registration
-- Energy Data Collection
-- Real-Time Monitoring
-- WebSocket Support
-- PostgreSQL Database
-- Redis & Celery Background Tasks
-- REST APIs using FastAPI
-- Analytics Dashboard
-- GitHub Actions CI/CD
-
----
-
-## Technology Stack
-
-### Backend
-- FastAPI
-- Python 3.14
-
-### Database
-- PostgreSQL
-
-### Task Queue
-- Celery
-- Redis
-
-### Real-Time Communication
-- WebSockets
-
-### Version Control
-- Git
-- GitHub
+* RESTful APIs using FastAPI
+* PostgreSQL database integration with SQLAlchemy ORM
+* Sensor Management (Create & View Sensors)
+* Energy Reading Management
+* Real-time Dashboard
+* Dashboard Analytics
+* Live WebSocket Updates
+* Redis Caching for Dashboard Summary
+* Celery Background Tasks
+* Scheduled Analytics using Celery Beat
+* Application Logging
+* Docker Configuration
+* Interactive Swagger API Documentation
 
 ---
 
-## Project Structure
+## 🛠️ Tech Stack
+
+**Backend**
+
+* FastAPI
+* Python 3
+
+**Database**
+
+* PostgreSQL
+
+**ORM**
+
+* SQLAlchemy
+
+**Cache**
+
+* Redis
+
+**Background Tasks**
+
+* Celery
+* Celery Beat
+
+**Real-Time Communication**
+
+* WebSockets
+
+**Frontend**
+
+* HTML
+* CSS
+* JavaScript
+* Jinja2 Templates
+
+**Deployment**
+
+* Docker
+* Docker Compose
+
+---
+
+## 📂 Project Structure
 
 ```text
 smart-grid-energy-monitor/
 │
 ├── app/
-│   ├── api/
-│   ├── core/
-│   ├── db/
+│   ├── routers/
 │   ├── models/
 │   ├── schemas/
-│   ├── services/
-│   ├── websocket/
-│   ├── workers/
-│   └── main.py
+│   ├── db/
+│   ├── static/
+│   ├── templates/
+│   ├── crud.py
+│   ├── main.py
+│   ├── analytics.py
+│   ├── celery_app.py
+│   ├── tasks.py
+│   └── logger.py
 │
-├── tests/
+├── logs/
+├── Dockerfile
+├── docker-compose.yml
 ├── requirements.txt
-├── README.md
-├── .gitignore
-└── .env
+└── README.md
 ```
 
-## Installation
+---
+
+## ⚙️ Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/ynpingat-beep/smart-grid-energy-monitor.git
+```
+
+Move into the project directory:
+
+```bash
+cd smart-grid-energy-monitor
+```
+
+Create a virtual environment:
 
 ```bash
 python -m venv venv
+```
 
+Activate the virtual environment:
+
+Windows
+
+```bash
 venv\Scripts\activate
+```
 
+Install dependencies:
+
+```bash
 pip install -r requirements.txt
 ```
 
-## Run Application
+---
+
+## ▶️ Running the Project
+
+Start the FastAPI server:
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-## API Documentation
+Start Redis.
 
-```text
+Start Celery Worker:
+
+```bash
+celery -A app.celery_app.celery worker --loglevel=info
+```
+
+Start Celery Beat:
+
+```bash
+celery -A app.celery_app.celery beat --loglevel=info
+```
+
+---
+
+## 📡 API Documentation
+
+Swagger UI
+
+```
 http://127.0.0.1:8000/docs
 ```
 
-## Internship Project
+ReDoc
 
-Python Development Internship
+```
+http://127.0.0.1:8000/redoc
+```
 
-Project: Smart Grid Energy Monitoring System
+---
 
-Status: Week 1 - Project Initialization
+## 📊 Dashboard Features
+
+* Total Sensors
+* Active Sensors
+* Inactive Sensors
+* Average Voltage
+* Average Current
+* Average Power
+* Total Energy Consumption
+* Live Dashboard Updates
+* Cached Dashboard Summary
+* Automated Analytics
+
+---
+
+## 📈 Background Processing
+
+The project uses Celery and Celery Beat to:
+
+* Aggregate energy data automatically
+* Execute scheduled analytics
+* Improve scalability for future tasks
+
+---
+
+## 📜 Logging
+
+Application logs are stored in:
+
+```text
+logs/app.log
+```
+
+Logged events include:
+
+* Sensor creation
+* Reading creation
+* Analytics execution
+* System events
+
+---
+
+## 🐳 Docker Support
+
+The project includes:
+
+* Dockerfile
+* docker-compose.yml
+* .dockerignore
+
+for containerized deployment.
+
+---
+
+## 🔮 Future Enhancements
+
+* User Authentication (JWT)
+* Role-Based Access Control
+* Email Notifications
+* SMS Alerts
+* Grafana Dashboard
+* Kubernetes Deployment
+* Cloud Deployment (AWS/Azure)
+* AI-Based Energy Consumption Prediction
+
+---
+
+## 👨‍💻 Author
+
+**Yash Pingat**
+
+GitHub: https://github.com/ynpingat-beep
