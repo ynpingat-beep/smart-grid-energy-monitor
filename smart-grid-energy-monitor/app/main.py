@@ -5,6 +5,16 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
+from app.exception_handler import generic_exception_handler
+app = FastAPI(
+    title="Smart Grid Energy Monitoring System",
+    version="1.0.0"
+)
+app.add_exception_handler(
+    Exception,
+    generic_exception_handler
+)
+
 from app.db.database import create_tables
 from app.routers.sensor import router as sensor_router
 from app.routers.reading import router as reading_router
