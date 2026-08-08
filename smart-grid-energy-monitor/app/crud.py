@@ -1,58 +1,72 @@
 import json
-import asyncio
-
-from app.routers.websocket import broadcast_alert
-
-from app.core.redis import redis_client
-
-from sqlalchemy.orm import Session
-from app.models import Sensor, EnergyReading, AggregatedLoad
-from app.schemas import SensorCreate
-
-from app.schemas import EnergyReadingCreate
 
 from sqlalchemy import func
+from sqlalchemy.orm import Session
 
+from app.core.redis import redis_client
 from app.logger import logger
+from app.models import Sensor, EnergyReading, AggregatedLoad
+from app.schemas import SensorCreate, EnergyReadingCreate
 
+
+# =========================================================
+# SENSOR OPERATIONS
+# =========================================================
 
 def create_sensor(db: Session, sensor: SensorCreate):
-
     db_sensor = Sensor(**sensor.model_dump())
 
     db.add(db_sensor)
-
     db.commit()
-
     db.refresh(db_sensor)
 
-    logger.info(f"Sensor Created | ID={db_sensor.id} | Name={db_sensor.sensor_name}")
+    logger.info(
+        f"Sensor Created | ID={db_sensor.id} | Name={db_sensor.sensor_name}"
+    )
 
     return db_sensor
+
 
 def get_sensors(db: Session):
     return db.query(Sensor).all()
 
+
+def get_recent_sensors(db: Session):
+    return (
+        db.query(Sensor)
+        .order_by(Sensor.id.desc())
+        .limit(5)
+        .all()
+    )
+
+
+# =========================================================
+# ENERGY READING OPERATIONS
+# =========================================================
+
+def create_reading(db: Session, reading: EnergyReadingCreate):
+    db_reading = EnergyReading(**reading.model_dump())
+
+    db.add(db_reading)
+    db.commit()
+    db.refresh(db_reading)
+
+    logger.info(
+        f"Reading Added | Sensor={db_reading.sensor_id} "
+        f"| Voltage={db_reading.voltage} "
+        f"| Power={db_reading.power}"
+    )
+
+    return db_reading
 
 
 def get_readings(db: Session):
     return db.query(EnergyReading).all()
 
 
-def create_reading(db: Session, reading: EnergyReadingCreate):
-
-    db_reading = EnergyReading(**reading.model_dump())
-
-    db.add(db_reading)
-
-    db.commit()
-
-    db.refresh(db_reading)
-
-    logger.info(f"Reading Added | Sensor={db_reading.sensor_id} | Voltage={db_reading.voltage} | Power={db_reading.power}")
-
-    return db_reading
-
+# =========================================================
+# DASHBOARD SUMMARY
+# =========================================================
 
 def get_dashboard_summary(db: Session):
 
@@ -107,7 +121,7 @@ def get_dashboard_summary(db: Session):
         "total_energy": round(total_energy, 2),
     }
 
-    # Save to Redis (if available)
+    # Save to Redis
     try:
         redis_client.setex(
             "dashboard_summary",
@@ -122,11 +136,12 @@ def get_dashboard_summary(db: Session):
     return summary
 
 
-def get_recent_sensors(db: Session):
-    return db.query(Sensor).order_by(Sensor.id.desc()).limit(5).all()
-
+# =========================================================
+# CHART DATA
+# =========================================================
 
 def get_chart_data(db: Session):
+
     readings = (
         db.query(EnergyReading)
         .order_by(EnergyReading.id.desc())
@@ -145,6 +160,10 @@ def get_chart_data(db: Session):
         for reading in readings
     ]
 
+
+# =========================================================
+# ANALYTICS
+# =========================================================
 
 def aggregate_load_by_zone(db: Session):
 
@@ -165,10 +184,21 @@ def aggregate_load_by_zone(db: Session):
         if not readings:
             continue
 
-        avg_voltage = sum(r.voltage for r in readings) / len(readings)
-        avg_current = sum(r.current for r in readings) / len(readings)
-        total_power = sum(r.power for r in readings)
-        total_energy = sum(r.energy for r in readings)
+        avg_voltage = sum(
+            reading.voltage for reading in readings
+        ) / len(readings)
+
+        avg_current = sum(
+            reading.current for reading in readings
+        ) / len(readings)
+
+        total_power = sum(
+            reading.power for reading in readings
+        )
+
+        total_energy = sum(
+            reading.energy for reading in readings
+        )
 
         aggregated = AggregatedLoad(
             zone=sensor.location,
@@ -182,7 +212,9 @@ def aggregate_load_by_zone(db: Session):
 
     db.commit()
 
-    logger.info("Analytics aggregation completed successfully")
+    logger.info(
+        "Analytics aggregation completed successfully"
+    )
 
     return {
         "message": "Aggregation completed successfully."
