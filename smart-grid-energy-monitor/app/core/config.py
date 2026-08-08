@@ -8,8 +8,14 @@ DATABASE_URL = os.getenv(
     "postgresql+psycopg://postgres:yash9477@localhost:5432/smart_grid_db"
 )
 
-SECRET_KEY = os.getenv("SECRET_KEY", "development-secret-key")
+SECRET_KEY = os.getenv(
+    "SECRET_KEY",
+    "development-secret-key"
+)
 
-DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+DEBUG = os.getenv(
+    "DEBUG",
+    "False"
+).lower() == "true"
 
 print("DATABASE_URL:", DATABASE_URL)
